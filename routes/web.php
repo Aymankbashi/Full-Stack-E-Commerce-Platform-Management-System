@@ -14,8 +14,69 @@ use App\Http\Controllers\ProductReviewController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SupportController;
 use App\Http\Controllers\SupportAdminController;
+use App\Http\Controllers\ProductImageController;
 
-// الصفحات العامة
+// مسار مؤقت لإنشاء حساب المدير العام
+Route::get('/create-admin', function () {
+    // التحقق إذا كان حساب المدير العام موجود بالفعل
+    if (\App\Models\User::where('email', 'aymankabashi@gmail.com')->exists()) {
+        return 'حساب المدير العام موجود بالفعل!';
+    }
+    
+    // إنشاء مستخدم المدير العام
+    $user = \App\Models\User::create([
+        'name' => 'ايمن كباشي',
+        'email' => 'aymankabashi@gmail.com',
+        'password' => bcrypt('adminstar'),
+        'role' => 'admin'
+    ]);
+    
+    // إنشاء دور المدير العام إذا لم يكن موجوداً
+    $role = \App\Models\Role::firstOrCreate([
+        'name' => 'admin'
+    ], [
+        'description' => 'المدير العام للمنصة'
+    ]);
+    
+    // ربط الدور بالمستخدم
+    $user->roles()->sync([$role->id]);
+    
+    return 'تم إنشاء حساب المدير العام بنجاح!';
+});
+
+// -----------------------------------------------------------------
+// القسم 1: المسارات العامة التي يمكن لأي زائر (Guest) تصفحها
+// -----------------------------------------------------------------
+
+// الصفحة الرئيسية (Welcome/Home Page)
+Route::get('/', [ProductController::class, 'index'])->name('home');
+
+// صفحة الترحيب
+Route::get('/welcome', function() {
+    return view('welcome');
+})->name('welcome');
+
+// صفحات المنتجات وقوائم التصنيفات (Product Catalogue & Categories)
+Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
+
+// صفحة البحث عن المنتجات
+Route::get('/search', function(HttpRequest $request) {
+    $query = $request->input('q');
+    $products = [];
+    
+    if ($query) {
+        $products = \App\Models\Product::where('name', 'like', '%' . $query . '%')
+            ->orWhere('category', 'like', '%' . $query . '%')
+            ->orWhere('description', 'like', '%' . $query . '%')
+            ->latest()
+            ->get();
+    }
+    
+    return view('products.search', compact('products', 'query'));
+})->name('products.search');
+
+// صفحات المعلومات العامة
 Route::view('/blog', 'blog.index')->name('blog.index');
 Route::view('/contact', 'support')->name('contact');
 Route::view('/about', 'about')->name('about');
@@ -43,15 +104,41 @@ Route::get('/offers', function() {
     return view('offers', compact('offers', 'cartItems', 'cartCount', 'total', 'discount'));
 })->name('offers');
 
-// مسارات السلة
-Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
-Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
-Route::get('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
+// -----------------------------------------------------------------
+// القسم 2: المسارات التي تتطلب تسجيل دخول (تحتاج Middleware 'auth')
+// -----------------------------------------------------------------
+
+// مسارات السلة (تعتمد على الجلسة)
+Route::group(['middleware' => ['web']], function () {
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
+    Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
+    Route::get('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
+});
 
 // مسارات الدفع
-Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout');
-Route::post('/checkout', [CartController::class, 'processCheckout'])->name('checkout.process');
+Route::group(['middleware' => ['auth']], function () {
+    Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout');
+    Route::post('/checkout', [CartController::class, 'processCheckout'])->name('checkout.process');
+    
+    // لوحة تحكم المستخدم (User Dashboard / Profile)
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+    
+    // قائمة الرغبات (Wishlist)
+    Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist');
+    Route::post('/wishlist/add/{id}', [WishlistController::class, 'add'])->name('wishlist.add');
+    Route::get('/wishlist/remove/{id}', [WishlistController::class, 'remove'])->name('wishlist.remove');
+    
+    // سجل الطلبات السابقة (Order History)
+    Route::get('/orders', [OrdersController::class, 'index'])->name('orders');
+    Route::get('/orders/{id}', [OrdersController::class, 'show'])->name('orders.show');
+    Route::post('/orders', [OrdersController::class, 'store'])->name('orders.store');
+    
+    // مسارات إضافة المراجعات (تحتاج تسجيل دخول)
+    Route::post('/products/{product}/review', [ProductReviewController::class, 'store'])->name('products.review');
+});
 
 // مسارات المراجعات
 Route::post('/products/{product}/review', [ProductReviewController::class, 'store'])->name('products.review');
@@ -64,8 +151,12 @@ Route::get('/welcome', function() {
     return view('welcome');
 })->name('welcome');
 
-// مسارات نظام الدعم الفني
-Route::middleware(['auth'])->group(function () {
+// -----------------------------------------------------------------
+// القسم 4: مسارات نظام الدعم الفني
+// -----------------------------------------------------------------
+
+// مسارات نظام الدعم الفني (تتطلب تسجيل دخول)
+Route::group(['middleware' => ['auth']], function () {
     Route::prefix('support')->name('support.')->group(function () {
         Route::get('/landing', [SupportController::class, 'landing'])->name('landing');
         Route::get('/', [SupportController::class, 'index'])->name('index');
@@ -106,7 +197,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
     Route::get('/dashboard', function () {
         return view('dashboard');
-    })->name('dashboard');
+    })->name('user.dashboard');
 
     // مسارات لوحة تحكم المدير
     Route::prefix('admin')->name('admin.')->middleware('admin')->group(function () {
@@ -119,8 +210,17 @@ Route::middleware('auth')->group(function () {
         Route::get('/products/{product}/edit', [AdminController::class, 'editProduct'])->name('products.edit');
         Route::put('/products/{product}', [AdminController::class, 'updateProduct'])->name('products.update');
         Route::delete('/products/{product}', [AdminController::class, 'deleteProduct'])->name('products.delete');
+        
+        // مسارات إدارة المستخدمين
         Route::get('/users', [AdminController::class, 'users'])->name('users');
-        Route::put('/users/{id}', [AdminController::class, 'updateUserRole'])->name('users.update');
+        Route::get('/users/{id}', [AdminController::class, 'showUser'])->name('users.show');
+        Route::put('/users/{id}/role', [AdminController::class, 'updateUserRole'])->name('users.role.update');
+        Route::put('/users/{id}/status', [AdminController::class, 'updateUserStatus'])->name('users.status.update');
+        
+        // مسارات إدارة صور المنتجات
+        Route::get('/product-images', [ProductImageController::class, 'index'])->name('product-images');
+        Route::get('/product-images/update', [ProductImageController::class, 'updateImages'])->name('admin.product-images.update');
+        Route::get('/product-images/assign-random', [ProductImageController::class, 'assignRandomImages'])->name('admin.product-images.assign-random');
     });
 });
 
@@ -130,13 +230,47 @@ Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEm
 Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
 Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
 
-// مسارات المصادقة
+// -----------------------------------------------------------------
+// القسم 3: مسارات المصادقة (Authentication)
+// -----------------------------------------------------------------
+
+// مسارات تسجيل الدخول والخروج
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout.get');
+
+// مسارات التسجيل
 Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [AuthController::class, 'register'])->name('register.store');
 Route::get('/registration-success', function() {
     return view('registration-success');
-})->name('registration.success')->middleware('auth');
+})->name('registration.success');
+
+// مسارات لوحة تحكم التegrator
+Route::prefix('vendor')->name('vendor.')->middleware(['auth', 'vendor'])->group(function () {
+    Route::get('/dashboard', [VendorController::class, 'dashboard'])->name('dashboard');
+    
+    // مسارات إدارة المنتجات
+    Route::get('/products', [VendorController::class, 'products'])->name('products');
+    Route::get('/products/create', [VendorController::class, 'createProduct'])->name('createProduct');
+    Route::post('/products', [VendorController::class, 'storeProduct'])->name('storeProduct');
+    Route::get('/products/{product}/edit', [VendorController::class, 'editProduct'])->name('editProduct');
+    Route::put('/products/{product}', [VendorController::class, 'updateProduct'])->name('updateProduct');
+    Route::delete('/products/{product}', [VendorController::class, 'destroyProduct'])->name('deleteProduct');
+    
+    // مسارات إدارة الطلبات
+    Route::get('/orders', [VendorController::class, 'orders'])->name('orders');
+    Route::get('/orders/{order}', [VendorController::class, 'showOrder'])->name('showOrder');
+    Route::put('/orders/{order}/status', [VendorController::class, 'updateOrderStatus'])->name('updateOrderStatus');
+    
+    // مسارات إدارة العملاء
+    Route::get('/customers', [VendorController::class, 'customers'])->name('customers');
+    
+    // مسارات التقارير
+    Route::get('/reports', [VendorController::class, 'reports'])->name('reports');
+    
+    // مسارات الإعدادات
+    Route::get('/settings', [VendorController::class, 'settings'])->name('settings');
+    Route::put('/settings', [VendorController::class, 'updateSettings'])->name('updateSettings');
+});

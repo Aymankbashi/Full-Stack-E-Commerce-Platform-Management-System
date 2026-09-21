@@ -408,42 +408,64 @@
                             <td>
                                 <span class="role-badge {{ $user->role }}">
                                     @if($user->role === 'admin')
-                                        {{ $labels['admin'] ?? 'أدمن' }}
+                                        {{ $labels['admin'] ?? 'مدير' }}
+                                    @elseif($user->role === 'vendor')
+                                        {{ $labels['vendor'] ?? 'تاجر' }}
                                     @elseif($user->role === 'support_agent')
-                                        {{ $labels['support_agent'] ?? 'موظف دعم' }}
+                                        {{ $labels['support_agent'] ?? 'دعم فني' }}
                                     @else
                                         {{ $labels['user'] ?? 'مستخدم' }}
                                     @endif
                                 </span>
                             </td>
-                            <td>{{ $user->created_at ? $user->created_at->format('Y-m-d') : '-' }}</td>
                             <td>
                                 <span class="status-badge {{ $user->is_active ?? true ? 'active' : 'inactive' }}">
                                     {{ $user->is_active ?? true ? ($labels['active'] ?? 'نشط') : ($labels['inactive'] ?? 'غير نشط') }}
                                 </span>
                             </td>
+                            <td>{{ $user->created_at ? $user->created_at->format('Y-m-d') : '-' }}</td>
                             <td>
                                 <div class="action-buttons">
-                                    <form action="{{ route('admin.users.update', $user->id) }}" method="POST" style="display: inline;">
+                                    <a href="{{ route('admin.users.show', $user->id) }}" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-eye"></i> عرض
+                                    </a>
+                                    <form action="{{ route('admin.users.role.update', $user->id) }}" method="POST" style="display: inline;">
                                         @csrf
-                                        @method('PUT')
                                         <select name="role" style="padding: 6px 12px; border: 1px solid #d5d9d9; border-radius: 4px; font-size: 0.85rem;">
                                             <option value="user" {{ $user->role === 'user' ? 'selected' : '' }}>{{ $labels['user'] ?? 'مستخدم' }}</option>
-                                            <option value="support_agent" {{ $user->role === 'support_agent' ? 'selected' : '' }}>{{ $labels['support_agent'] ?? 'موظف دعم' }}</option>
-                                            <option value="admin" {{ $user->role === 'admin' ? 'selected' : '' }}>{{ $labels['admin'] ?? 'أدمن' }}</option>
+                                            <option value="vendor" {{ $user->role === 'vendor' ? 'selected' : '' }}>{{ $labels['vendor'] ?? 'تاجر' }}</option>
+                                            <option value="support_agent" {{ $user->role === 'support_agent' ? 'selected' : '' }}>{{ $labels['support_agent'] ?? 'دعم فني' }}</option>
+                                            <option value="admin" {{ $user->role === 'admin' ? 'selected' : '' }}>{{ $labels['admin'] ?? 'مدير' }}</option>
                                         </select>
                                         <button type="submit" class="btn btn-success" style="padding: 6px 12px; font-size: 0.85rem;">
                                             <i class="fas fa-sync"></i>
                                         </button>
                                     </form>
                                     @if($user->id !== Auth::id())
-                                    <form action="{{ route('admin.users.delete', $user->id) }}" method="POST" style="display: inline;" onsubmit="return confirm('{{ $labels['confirm_delete_user'] ?? 'هل أنت متأكد من حذف هذا المستخدم؟' }}');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger" style="padding: 6px 12px; font-size: 0.85rem;">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
+                                        @if($user->is_active)
+                                            <form action="{{ route('admin.users.status.update', $user->id) }}" method="POST" style="display: inline;">
+                                                @csrf
+                                                <input type="hidden" name="status" value="deactivate">
+                                                <button type="submit" class="btn btn-warning" style="padding: 6px 12px; font-size: 0.85rem;">
+                                                    <i class="fas fa-ban"></i> تعطيل
+                                                </button>
+                                            </form>
+                                        @else
+                                            <form action="{{ route('admin.users.status.update', $user->id) }}" method="POST" style="display: inline;">
+                                                @csrf
+                                                <input type="hidden" name="status" value="activate">
+                                                <button type="submit" class="btn btn-success" style="padding: 6px 12px; font-size: 0.85rem;">
+                                                    <i class="fas fa-check"></i> تفعيل
+                                                </button>
+                                            </form>
+                                        @endif
+                                        <form action="{{ route('admin.users.delete', $user->id) }}" method="POST" style="display: inline;" onsubmit="return confirm('{{ $labels['confirm_delete_user'] ?? 'هل أنت متأكد من حذف هذا المستخدم؟' }}');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger" style="padding: 6px 12px; font-size: 0.85rem;">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
                                     @endif
                                 </div>
                             </td>

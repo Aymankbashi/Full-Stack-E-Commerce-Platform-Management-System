@@ -14,28 +14,44 @@ class AdminController extends Controller
      */
     public function dashboard()
     {
-        $products = Product::latest()->get();
-
+        // إحصائيات المنتجات
+        $productCount = Product::count();
+        $totalProducts = Product::count();
+        
         // إحصائيات المستخدمين
+        $totalUsers = User::count();
         $allUsers = User::all();
         $activeUsers = User::where('is_active', 1)->count();
         $inactiveUsers = User::where('is_active', 0)->count();
         $supportAgents = User::where('role', 'support_agent')->count();
+        $vendors = User::where('role', 'vendor')->count();
         $recentUsers = User::latest()->take(5)->get();
 
-        // إحصائيات المنتجات
-        $productCount = Product::count();
-
+        // إحصائيات الطلبات
+        $totalOrders = \App\Models\Order::count();
+        $totalSales = \App\Models\Order::sum('total');
+        
+        // إحصائيات التجار
+        $totalVendors = \App\Models\Vendor::count();
+        
+        // إحصائيات العمولات
+        $totalCommission = \App\Models\Order::sum('platform_commission');
+        
         // إحصائيات الدعم الفني
         $activeSupportSessions = \App\Models\SupportSession::where('status', 'active')->count();
         $recentSupportSessions = \App\Models\SupportSession::with('user')
             ->latest()
             ->take(5)
             ->get();
-
-        // إحصائيات الطلبات (قيم تجريبية)
-        $orderCount = 0;
-        $revenue = 0;
+            
+        // المنتجات الجديدة
+        $newProducts = Product::latest()->take(5)->get();
+        
+        // الطلبات الأخيرة
+        $recentOrders = \App\Models\Order::with('user')
+            ->latest()
+            ->take(5)
+            ->get();
 
         return view('admin.dashboard', compact(
             'products',
@@ -48,7 +64,15 @@ class AdminController extends Controller
             'activeSupportSessions',
             'recentSupportSessions',
             'orderCount',
-            'revenue'
+            'revenue',
+            'totalProducts',
+            'totalUsers',
+            'totalOrders',
+            'totalSales',
+            'totalVendors',
+            'totalCommission',
+            'newProducts',
+            'recentOrders'
         ));
     }
 
@@ -172,7 +196,7 @@ class AdminController extends Controller
     public function updateUserRole(Request $request, $id)
     {
         $request->validate([
-            'role' => 'required|in:admin,support_agent,user',
+            'role' => 'required|in:admin,support_agent,vendor,user',
         ]);
 
         $user = User::findOrFail($id);
@@ -180,5 +204,37 @@ class AdminController extends Controller
         $user->save();
 
         return redirect()->back()->with('success', 'تم تحديث صلاحية المستخدم بنجاح');
+    }
+    
+    /**
+     * عرض تفاصيل المستخدم
+     */
+    public function showUser($id)
+    {
+        $user = User::findOrFail($id);
+        $userOrders = \App\Models\Order::where('user_id', $id)->latest()->get();
+        $userProducts = Product::where('user_id', $id)->latest()->get();
+        
+        return view('admin.users.show', compact('user', 'userOrders', 'userProducts'));
+    }
+    
+    /**
+     * تحديث حالة المستخدم
+     */
+    public function updateUserStatus(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+        
+        if ($request->status == 'activate') {
+            $user->is_active = 1;
+            $message = 'تم تفعيل حساب المستخدم بنجاح';
+        } else {
+            $user->is_active = 0;
+            $message = 'تم تعطيل حساب المستخدم بنجاح';
+        }
+        
+        $user->save();
+        
+        return redirect()->back()->with('success', $message);
     }
 }

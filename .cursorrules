@@ -1,0 +1,4 @@
+- Never modify routing files (web.php, api.php) unless explicitly requested.
+- Do not create new Controllers, Models, or Migrations using your own naming. Only write code inside the specific file I provided.
+- Maintain existing Laravel FormRequests and Validation rules. Do not bypass them.
+- When fixing an error in a Controller, do not rewrite the entire class. Provide only the specific method that needs fixing.

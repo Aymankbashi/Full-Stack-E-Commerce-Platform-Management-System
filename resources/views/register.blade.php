@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 @php
     $locale = app()->getLocale();
-    $dir = $locale === 'ar' ? 'rtl' : 'ltr';
     $labels = require base_path('lang/' . $locale . '.php');
 @endphp
-<html lang="{{ $locale }}" dir="{{ $dir }}">
+<html lang="{{ $locale }}" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,13 +18,14 @@
         }
         body {
             font-family: 'Cairo', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #232f3e 0%, #37475a 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
-            overflow: hidden;
+            overflow-x: hidden;
+            padding: 1rem 0;
         }
         body::before {
             content: '';
@@ -49,13 +49,17 @@
         }
         .register-container {
             background: #fff;
-            padding: 2.5rem 2rem;
+            padding: 2rem;
             border-radius: 16px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
             width: 100%;
             max-width: 450px;
             position: relative;
             z-index: 1;
+            margin: 0 auto;
+            overflow: hidden;
+            box-sizing: border-box;
+            height: fit-content;
         }
         .register-header {
             text-align: center;
@@ -64,12 +68,12 @@
         .logo {
             font-size: 2rem;
             font-weight: 700;
-            color: #667eea;
+            color: #fff;
             margin-bottom: 0.5rem;
             text-decoration: none;
         }
         .logo span {
-            color: #764ba2;
+            color: #f0c14b;
         }
         .register-container h2 {
             color: #2d3436;
@@ -97,38 +101,47 @@
         }
         .input-group i.left {
             left: 1rem;
+            z-index: 2;
         }
-        input[type="text"], input[type="email"], input[type="password"] {
+        input[type="text"], input[type="email"], input[type="password"], select {
             width: 100%;
-            padding: 0.8rem 2.5rem 0.8rem 1rem;
+            padding: 0.8rem 2.5rem 0.8rem 2.5rem;
             border: 2px solid #e9ecef;
             border-radius: 10px;
             font-size: 1rem;
             background: #f8f9fa;
             transition: all 0.3s ease;
+            box-sizing: border-box;
+            position: relative;
+            z-index: 1;
         }
-        input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus {
-            border-color: #667eea;
+        input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus, select:focus {
+            border-color: #f0c14b;
             background: #fff;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            box-shadow: 0 0 0 3px rgba(240, 193, 75, 0.1);
             outline: none;
         }
         .btn-register {
             width: 100%;
             padding: 1rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #fff;
+            background: linear-gradient(135deg, #f0c14b 0%, #ddb347 100%);
+            color: #232f3e;
             border: none;
             border-radius: 10px;
             font-size: 1.1rem;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 4px 12px rgba(240, 193, 75, 0.3);
+            margin-top: 1rem;
+            min-height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .btn-register:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 6px 16px rgba(240, 193, 75, 0.4);
         }
         .success {
             color: #27ae60;
@@ -155,19 +168,66 @@
             border-top: 1px solid #e9ecef;
         }
         .links a {
-            color: #667eea;
+            color: #f0c14b;
             text-decoration: none;
             font-weight: 500;
             transition: color 0.2s;
         }
         .links a:hover {
-            color: #764ba2;
+            color: #ddb347;
             text-decoration: underline;
         }
         @media (max-width: 768px) {
             .register-container {
-                padding: 2rem 1.5rem;
-                margin: 1rem;
+                padding: 1.5rem;
+                margin: 1rem auto;
+                max-width: 90%;
+            }
+        }
+        @media (max-width: 480px) {
+            body {
+                padding: 0.5rem 0;
+            }
+            .register-container {
+                padding: 1.2rem;
+                margin: 0 auto;
+                max-width: 95%;
+            }
+            .logo {
+                font-size: 1.8rem;
+            }
+            .register-container h2 {
+                font-size: 1.4rem;
+            }
+            .btn-register {
+                font-size: 1.1rem;
+                padding: 1rem;
+            }
+        }
+        @media (max-width: 320px) {
+            .register-container {
+                padding: 1rem;
+                margin: 0 auto;
+                max-width: 95%;
+            }
+            .logo {
+                font-size: 1.6rem;
+            }
+            .register-container h2 {
+                font-size: 1.2rem;
+                margin-bottom: 1.5rem;
+            }
+            input[type="text"], input[type="email"], input[type="password"], select {
+                padding: 0.7rem 1.5rem 0.7rem 0.8rem;
+                font-size: 0.9rem;
+            }
+            .btn-register {
+                padding: 0.9rem;
+                font-size: 1rem;
+                margin-top: 1rem;
+            }
+            .form-group {
+                margin-bottom: 1.2rem;
             }
         }
     </style>
@@ -230,7 +290,16 @@
                     <input type="password" id="password_confirmation" name="password_confirmation" required>
                 </div>
             </div>
-            <input type="hidden" name="admin" value="{{ request('admin', '0') }}">
+            <div class="form-group">
+                <label for="role">{{ $labels['user_role'] ?? 'دور المستخدم' }}</label>
+                <div class="input-group">
+                    <i class="fas fa-user-tag left"></i>
+                    <select id="role" name="role" required>
+                        <option value="user" {{ old('role') === 'user' ? 'selected' : '' }}>{{ $labels['customer_role'] ?? 'عميل' }}</option>
+                        <option value="vendor" {{ old('role') === 'vendor' ? 'selected' : '' }}>{{ $labels['vendor_role'] ?? 'تاجر' }}</option>
+                    </select>
+                </div>
+            </div>
             <button type="submit" class="btn-register">
                 <i class="fas fa-user-plus"></i>
                 {{ $labels['register'] ?? 'إنشاء حساب' }}

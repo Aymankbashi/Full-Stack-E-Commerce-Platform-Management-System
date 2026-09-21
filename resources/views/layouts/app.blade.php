@@ -134,7 +134,7 @@
                             </button>
                             <ul class="dropdown-menu dropdown-menu-{{ $dir }}">
                                 <li>
-                                    <a class="dropdown-item" href="{{ route('dashboard') }}">
+                                    <a class="dropdown-item" href="{{ route('user.dashboard') }}">
                                         <i class="bi bi-speedometer2"></i> {{ $labels['dashboard'] }}
                                     </a>
                                 </li>

@@ -148,6 +148,20 @@
                     <input type="number" name="quantity" value="1" min="1" style="width:60px; margin-left:1rem;">
                     <button type="submit" class="btn">{{ $labels['cart'] ?? 'أضف إلى السلة' }}</button>
                 </form>
+                
+                <!-- زر إضافة للمفضلة -->
+                @guest
+                    <a href="{{ route('login', ['intended' => request()->url()]) }}" class="btn btn-outline-danger" style="margin-left:1rem;">
+                        <i class="bi bi-heart"></i> {{ $labels['wishlist'] ?? 'إضافة للمفضلة' }}
+                    </a>
+                @else
+                    <form action="{{ route('wishlist.add', $product->id) }}" method="POST" style="display:inline;">
+                        @csrf
+                        <button type="submit" class="btn btn-outline-danger" style="margin-left:1rem;">
+                            <i class="bi bi-heart"></i> {{ $labels['wishlist'] ?? 'إضافة للمفضلة' }}
+                        </button>
+                    </form>
+                @endguest
             </div>
         </div>
     </div>
@@ -163,20 +177,27 @@
             <div>{{ $labels['no_reviews'] ?? 'لا توجد مراجعات بعد.' }}</div>
         @endforelse
         <div class="add-review" style="margin-top:2rem;">
-            <form action="{{ route('products.review', $product->id) }}" method="POST">
-                @csrf
-                <label>{{ $labels['add_review'] ?? 'أضف مراجعتك' }}</label>
-                <textarea name="comment" rows="3" required></textarea>
-                <label>{{ $labels['rating'] ?? 'التقييم' }}</label>
-                <select name="rating" required>
-                    <option value="5">5</option>
-                    <option value="4">4</option>
-                    <option value="3">3</option>
-                    <option value="2">2</option>
-                    <option value="1">1</option>
-                </select>
-                <button type="submit" class="btn">{{ $labels['add_review'] ?? 'أضف مراجعتك' }}</button>
-            </form>
+            @guest
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> {{ $labels['login_to_review'] ?? 'يجب تسجيل الدخول لإضافة مراجعة' }} 
+                    <a href="{{ route('login', ['intended' => request()->url()]) }}" class="btn btn-primary btn-sm ms-2">{{ $labels['login'] }}</a>
+                </div>
+            @else
+                <form action="{{ route('products.review', $product->id) }}" method="POST">
+                    @csrf
+                    <label>{{ $labels['add_review'] ?? 'أضف مراجعتك' }}</label>
+                    <textarea name="comment" rows="3" required></textarea>
+                    <label>{{ $labels['rating'] ?? 'التقييم' }}</label>
+                    <select name="rating" required>
+                        <option value="5">5</option>
+                        <option value="4">4</option>
+                        <option value="3">3</option>
+                        <option value="2">2</option>
+                        <option value="1">1</option>
+                    </select>
+                    <button type="submit" class="btn">{{ $labels['add_review'] ?? 'أضف مراجعتك' }}</button>
+                </form>
+            @endguest
         </div>
     </div>
 </body>

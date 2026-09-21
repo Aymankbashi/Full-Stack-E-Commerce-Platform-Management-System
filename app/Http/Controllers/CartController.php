@@ -6,6 +6,11 @@ use App\Models\Product;
 
 class CartController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth')->only(['checkout', 'processCheckout']);
+    }
+    
     public function checkout()
     {
         return view('checkout');

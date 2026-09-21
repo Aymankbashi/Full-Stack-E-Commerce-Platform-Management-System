@@ -3,128 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة تحكم الهيئة العامة للغذاء والدواء</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>لوحة التحكم</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <style>
         body {
             font-family: 'Cairo', sans-serif;
-            background: #f4f7fa;
-            margin: 0;
-            padding: 0;
+            background-color: #f5f5f5;
         }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.5rem 2rem 1rem 2rem;
-            background: #fff;
-            border-bottom: 1px solid #e5e7eb;
+        .navbar {
+            background: #232f3e !important;
+            padding: 0.5rem 0;
         }
-        .header img {
-            height: 48px;
-        }
-        .header .user {
-            font-size: 1.1rem;
-            color: #3358e6;
+        .navbar-brand {
             font-weight: 700;
+            font-size: 1.8rem;
+            color: #fff !important;
         }
-        .dashboard-main {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1rem;
+        .navbar-brand:hover {
+            color: #f0c14b !important;
         }
-        .cards {
-            display: flex;
-            gap: 1.5rem;
+        .dashboard-header {
+            background: linear-gradient(135deg, #232f3e 0%, #37475a 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
             margin-bottom: 1.5rem;
-            flex-wrap: wrap;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
         }
-        .card {
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(51, 88, 230, 0.07);
-            padding: 1.2rem 2rem;
-            flex: 1 1 180px;
-            min-width: 180px;
-            text-align: center;
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
-        .card-title {
-            color: #888;
+        .stat-icon {
+            font-size: 2.5rem;
+            color: #f0c14b;
+            margin-bottom: 1rem;
+        }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #232f3e;
+            margin-bottom: 0.5rem;
+        }
+        .stat-label {
             font-size: 1rem;
-            margin-bottom: 0.3rem;
+            color: #888;
         }
-        .card-value {
-            font-size: 2.1rem;
+        .section-title {
+            font-size: 1.5rem;
             font-weight: 700;
-            color: #3358e6;
-        }
-        .tables-row {
-            display: flex;
-            gap: 1.5rem;
             margin-bottom: 1.5rem;
-            flex-wrap: wrap;
+            color: #232f3e;
         }
         .table-box {
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(51, 88, 230, 0.07);
-            padding: 1rem 1.2rem;
-            flex: 1 1 350px;
-            min-width: 320px;
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 0.5rem;
         }
         th, td {
-            padding: 0.4rem 0.6rem;
-            text-align: center;
+            padding: 0.75rem;
+            text-align: right;
             border-bottom: 1px solid #f0f0f0;
         }
         th {
-            background: #f4f7fa;
-            color: #3358e6;
-            font-weight: 700;
+            background: #f5f5f5;
+            color: #232f3e;
+            font-weight: 600;
         }
-        .highlight {
-            background: #ffe6b3;
-            color: #b26a00;
-            font-weight: 700;
+        .btn-primary-custom {
+            background: #f0c14b;
+            border: 1px solid #a88734;
+            color: #111;
+            font-weight: 600;
         }
-        .chart-row {
+        .btn-primary-custom:hover {
+            background: #ddb347;
+            color: #111;
+        }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f0c14b;
             display: flex;
-            gap: 1.5rem;
-            flex-wrap: wrap;
-        }
-        .chart-box, .map-box {
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(51, 88, 230, 0.07);
-            padding: 1rem 1.2rem;
-            flex: 1 1 350px;
-            min-width: 320px;
-        }
-        .logout-btn {
-            background: linear-gradient(90deg, #4f8cff 0%, #3358e6 100%);
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
+            align-items: center;
+            justify-content: center;
+            color: #232f3e;
             font-weight: 700;
-            padding: 0.5rem 1.5rem;
-            cursor: pointer;
-            margin-right: 1rem;
-            transition: background 0.2s;
+            margin-left: 1rem;
         }
-        .logout-btn:hover {
-            background: linear-gradient(90deg, #3358e6 0%, #4f8cff 100%);
+        .chart-container {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            height: 300px;
         }
-        @media (max-width: 900px) {
-            .cards, .tables-row, .chart-row {
-                flex-direction: column;
-            }
+        .activity-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f0c14b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 1rem;
+        }
+        .activity-content {
+            flex: 1;
+        }
+        .activity-title {
+            font-weight: 600;
+            color: #232f3e;
+            margin-bottom: 0.25rem;
+        }
+        .activity-time {
+            font-size: 0.875rem;
+            color: #888;
         }
     </style>
 </head>
@@ -134,206 +153,281 @@
     $labels = require base_path('lang/' . $locale . '.php');
 @endphp
 
+@php
+    $locale = app()->getLocale();
+    $dir = $locale === 'ar' ? 'rtl' : 'ltr';
+    $labels = require base_path('lang/' . $locale . '.php');
+@endphp
+
 <body>
-    <div class="header">
-        <img src="https://www.sfda.gov.sa/themes/custom/sfda/logo.png" alt="شعار الهيئة العامة للغذاء والدواء">
-        <div class="user" style="position:relative;">
-            <span id="userIcon" style="display:inline-flex;align-items:center;cursor:pointer;">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="#3358e6" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="12" cy="8" r="4"/>
-                    <path d="M12 14c-4.418 0-8 1.79-8 4v2h16v-2c0-2.21-3.582-4-8-4z"/>
-                </svg>
-                <span style="margin-right:0.5rem; font-weight:700;">{{ Auth::user()->name }}</span>
-            </span>
-            <div id="userCard" style="display:none; position:absolute; left:0; top:120%; min-width:220px; background:#fff; box-shadow:0 4px 16px rgba(51,88,230,0.13); border-radius:10px; padding:1.2rem 1rem 1rem 1rem; z-index:100; text-align:right;">
-                <div style="font-size:1.1rem; color:#3358e6; font-weight:700; margin-bottom:0.3rem;">{{ Auth::user()->name }}</div>
-                <div style="font-size:0.97rem; color:#888; margin-bottom:0.7rem; direction:ltr;">{{ Auth::user()->email }}</div>
-                <form method="POST" action="{{ route('logout') }}" style="margin:0;">
-                    @csrf
-                    <button type="submit" class="logout-btn" style="width:100%;margin:0;">تسجيل الخروج</button>
-                </form>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ route('home') }}">
+                <i class="bi bi-shop"></i> {{ $labels['site_title'] ?? 'متجر إلكتروني' }}
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('products.index') }}">
+                            <i class="bi bi-grid"></i> {{ $labels['view_products'] ?? 'المنتجات' }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('orders') }}">
+                            <i class="bi bi-receipt"></i> {{ $labels['my_orders'] ?? 'طلباتي' }}
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="d-flex align-items-center">
+                    <div class="dropdown">
+                        <button class="btn btn-outline-light dropdown-toggle d-flex align-items-center" type="button" data-bs-toggle="dropdown">
+                            <span>{{ Auth::user()->name }}</span>
+                            <div class="user-avatar">{{ Auth::user()->name[0] }}</div>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item" href="{{ route('user.dashboard') }}">
+                                    <i class="bi bi-speedometer2"></i> {{ $labels['dashboard'] ?? 'لوحة التحكم' }}
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{{ route('wishlist') }}">
+                                    <i class="bi bi-heart"></i> {{ $labels['wishlist'] ?? 'قائمة الرغبات' }}
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{{ route('orders') }}">
+                                    <i class="bi bi-receipt"></i> {{ $labels['my_orders'] ?? 'طلباتي' }}
+                                </a>
+                            </li>
+                            @if(Auth::user()->isRole('admin'))
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('admin.dashboard') }}">
+                                        <i class="bi bi-gear"></i> {{ $labels['admin_panel'] ?? 'لوحة الإدارة' }}
+                                    </a>
+                                </li>
+                            @endif
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item">
+                                        <i class="bi bi-box-arrow-right"></i> {{ $labels['logout'] ?? 'تسجيل الخروج' }}
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
-    </head>
-    <body>
-        <script>
-            // User card dropdown logic
-            document.addEventListener('DOMContentLoaded', function() {
-                var userIcon = document.getElementById('userIcon');
-                var userCard = document.getElementById('userCard');
-                if(userIcon && userCard) {
-                    userIcon.addEventListener('click', function(e) {
-                        e.stopPropagation();
-                        userCard.style.display = userCard.style.display === 'block' ? 'none' : 'block';
-                    });
-                    document.addEventListener('click', function() {
-                        userCard.style.display = 'none';
-                    });
-                }
-            });
-        </script>
-    </div>
-    <div class="dashboard-main">
-        <div class="cards">
-            <div class="card">
-                <div class="card-title">Total Decisions</div>
-                <div class="card-value">206</div>
-            </div>
-            <div class="card">
-                <div class="card-title">Country</div>
-                <div class="card-value">71</div>
-            </div>
-            <div class="card">
-                <div class="card-title">Region</div>
-                <div class="card-value">122</div>
-            </div>
-            <div class="card">
-                <div class="card-title">Banned</div>
-                <div class="card-value">164</div>
-            </div>
-            <div class="card">
-                <div class="card-title">Lifted</div>
-                <div class="card-value">42</div>
-            </div>
-        </div>
-        <div class="tables-row">
-            <div class="table-box">
-                <div style="font-weight:700; color:#3358e6; margin-bottom:0.5rem;">Cause</div>
-                <table>
-                    <tr>
-                        <th>Cause</th>
-                        <th>%</th>
-                        <th>Country</th>
-                        <th>Region</th>
-                    </tr>
-                    <tr class="highlight">
-                        <td>HPAI</td>
-                        <td>95.1%</td>
-                        <td>67</td>
-                        <td>116</td>
-                    </tr>
-                    <tr>
-                        <td>FMD</td>
-                        <td>2.9%</td>
-                        <td>6</td>
-                        <td>6</td>
-                    </tr>
-                    <tr>
-                        <td>Koi Herpes Virus</td>
-                        <td>0.5%</td>
-                        <td>1</td>
-                        <td>1</td>
-                    </tr>
-                    <tr>
-                        <td>BSE</td>
-                        <td>0.5%</td>
-                        <td>1</td>
-                        <td>1</td>
-                    </tr>
-                    <tr>
-                        <td>White Spot Syndrome</td>
-                        <td>0.5%</td>
-                        <td>1</td>
-                        <td>1</td>
-                    </tr>
-                    <tr>
-                        <td>Newcastle</td>
-                        <td>0.5%</td>
-                        <td>1</td>
-                        <td>1</td>
-                    </tr>
-                </table>
-            </div>
-            <div class="table-box">
-                <div style="font-weight:700; color:#3358e6; margin-bottom:0.5rem;">Products</div>
-                <table>
-                    <tr>
-                        <th>Products</th>
-                        <th>Decision</th>
-                        <th>%</th>
-                        <th>Country</th>
-                        <th>Region</th>
-                    </tr>
-                    <tr class="highlight">
-                        <td>Poultry</td>
-                        <td>196</td>
-                        <td>91.3%</td>
-                        <td>67</td>
-                        <td>117</td>
-                    </tr>
-                    <tr>
-                        <td>Cattle & Sheep</td>
-                        <td>4</td>
-                        <td>3.9%</td>
-                        <td>4</td>
-                        <td>4</td>
-                    </tr>
-                    <tr>
-                        <td>Cattle</td>
-                        <td>2</td>
-                        <td>1.9%</td>
-                        <td>2</td>
-                        <td>2</td>
-                    </tr>
-                    <tr>
-                        <td>Fish</td>
-                        <td>1</td>
-                        <td>1.0%</td>
-                        <td>1</td>
-                        <td>1</td>
-                    </tr>
-                    <tr>
-                        <td>Shrimp</td>
-                        <td>1</td>
-                        <td>1.0%</td>
-                        <td>1</td>
-                        <td>1</td>
-                    </tr>
-                    <tr>
-                        <td>Camel & Cattle & Sheep</td>
-                        <td>1</td>
-                        <td>1.0%</td>
-                        <td>1</td>
-                        <td>1</td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-        <div class="chart-row">
-            <div class="chart-box">
-                <div style="font-weight:700; color:#3358e6; margin-bottom:0.5rem;">No. of Decisions by Years</div>
-                <canvas id="decisionsByYear" height="120"></canvas>
-            </div>
-            <div class="map-box">
-                <div style="font-weight:700; color:#3358e6; margin-bottom:0.5rem;">World Map (عدد القرارات حسب الدولة)</div>
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/World_map_-_low_resolution.svg/1200px-World_map_-_low_resolution.svg.png" alt="World Map" style="width:100%; border-radius:8px; opacity:0.85;">
-                <div style="text-align:center; color:#888; font-size:0.95rem; margin-top:0.5rem;">خريطة توضيحية فقط</div>
+    </nav>
+
+    <!-- Dashboard Header -->
+    <div class="dashboard-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="mb-0">مرحباً، {{ Auth::user()->name }}</h1>
+                    <p class="lead mb-0">مرحباً بك في لوحة تحكمك الشخصية</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="user-avatar" style="width: 80px; height: 80px; font-size: 2rem; margin: 0 auto;">
+                        {{ Auth::user()->name[0] }}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
+    <!-- Dashboard Content -->
+    <div class="container">
+        <!-- Statistics Cards -->
+        <div class="row">
+            <div class="col-md-3 col-sm-6">
+                <div class="stat-card text-center">
+                    <i class="bi bi-cart3 stat-icon"></i>
+                    <div class="stat-value">12</div>
+                    <div class="stat-label">إجمالي الطلبات</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="stat-card text-center">
+                    <i class="bi bi-check-circle stat-icon"></i>
+                    <div class="stat-value">8</div>
+                    <div class="stat-label">الطلبات المكتملة</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="stat-card text-center">
+                    <i class="bi bi-heart stat-icon"></i>
+                    <div class="stat-value">0</div>
+                    <div class="stat-label">قائمة الرغبات</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="stat-card text-center">
+                    <i class="bi bi-star stat-icon"></i>
+                    <div class="stat-value">0</div>
+                    <div class="stat-label">المراجعات</div>
+                </div>
+            </div>
+        </div>
+        <!-- Recent Orders and Activity -->
+        <div class="row">
+            <div class="col-md-8">
+                <div class="section-title">أحدث طلباتك</div>
+                <div class="table-box">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>رقم الطلب</th>
+                                <th>التاريخ</th>
+                                <th>المبلغ الإجمالي</th>
+                                <th>الحالة</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- بيانات وهمية لعرض النموذج -->
+                            <tr>
+                                <td>#1001</td>
+                                <td>2023-06-15</td>
+                                <td>245.75 ر.س</td>
+                                <td>
+                                    <span class="badge bg-success">مكتمل</span>
+                                </td>
+                                <td>
+                                    <a href="#" class="btn btn-sm btn-primary-custom">عرض التفاصيل</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>#1002</td>
+                                <td>2023-06-10</td>
+                                <td>128.50 ر.س</td>
+                                <td>
+                                    <span class="badge bg-warning">قيد المعالجة</span>
+                                </td>
+                                <td>
+                                    <a href="#" class="btn btn-sm btn-primary-custom">عرض التفاصيل</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>#1003</td>
+                                <td>2023-06-05</td>
+                                <td>89.99 ر.س</td>
+                                <td>
+                                    <span class="badge bg-secondary">جديد</span>
+                                </td>
+                                <td>
+                                    <a href="#" class="btn btn-sm btn-primary-custom">عرض التفاصيل</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="section-title">نشاطك الأخير</div>
+                <div class="table-box">
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="bi bi-cart-plus"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">تم إضافة منتج جديد إلى السلة</div>
+                            <div class="activity-time">منذ ساعتين</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="bi bi-heart"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">تمت إضافة منتج إلى قائمة الرغبات</div>
+                            <div class="activity-time">منذ 5 ساعات</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="bi bi-star"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">تمت كتابة مراجعة لمنتج</div>
+                            <div class="activity-time">منذ يومين</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="bi bi-check-circle"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">تم استلام طلبك بنجاح</div>
+                            <div class="activity-time">منذ 3 أيام</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chart Section -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="section-title">نشاطك خلال الشهر</div>
+                <div class="chart-container">
+                    <canvas id="activityChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // Chart.js for No. of Decisions by Years
-        const ctx = document.getElementById('decisionsByYear').getContext('2d');
-        new Chart(ctx, {
-            type: 'bar',
+        // Chart for user activity
+        const ctx = document.getElementById('activityChart').getContext('2d');
+        const activityChart = new Chart(ctx, {
+            type: 'line',
             data: {
-                labels: [2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023],
+                labels: ['الأسبوع 1', 'الأسبوع 2', 'الأسبوع 3', 'الأسبوع 4'],
                 datasets: [{
-                    label: 'عدد القرارات',
-                    data: [7,4,6,27,1,4,5,1,1,1,2,1,1,1,17,28,18,14,42],
-                    backgroundColor: '#3358e6',
-                    borderRadius: 6,
+                    label: 'الطلبات',
+                    data: [12, 19, 15, 25],
+                    borderColor: '#f0c14b',
+                    backgroundColor: 'rgba(240, 193, 75, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }, {
+                    label: 'المراجعات',
+                    data: [5, 8, 12, 9],
+                    borderColor: '#232f3e',
+                    backgroundColor: 'rgba(35, 47, 62, 0.1)',
+                    tension: 0.4,
+                    fill: true
                 }]
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 plugins: {
-                    legend: { display: false }
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'نشاطك خلال الشهر'
+                    }
                 },
                 scales: {
                     y: {
-                        beginAtZero: true,
-                        ticks: { stepSize: 5 }
+                        beginAtZero: true
                     }
                 }
             }

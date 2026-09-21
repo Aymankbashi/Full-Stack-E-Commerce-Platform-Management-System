@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 @php
     $locale = app()->getLocale();
-    $dir = $locale === 'ar' ? 'rtl' : 'ltr';
     $labels = require base_path('lang/' . $locale . '.php');
 @endphp
-<html lang="{{ $locale }}" dir="{{ $dir }}">
+<html lang="{{ $locale }}" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -97,18 +96,23 @@
         }
         .input-group i.left {
             left: 1rem;
+            z-index: 2;
         }
         .input-group i.right {
             right: 1rem;
+            z-index: 2;
         }
         input[type="email"], input[type="password"] {
             width: 100%;
-            padding: 0.8rem 2.5rem 0.8rem 1rem;
+            padding: 0.8rem 2.5rem 0.8rem 2.5rem;
             border: 2px solid #e9ecef;
             border-radius: 10px;
             font-size: 1rem;
             background: #f8f9fa;
             transition: all 0.3s ease;
+            box-sizing: border-box;
+            position: relative;
+            z-index: 1;
         }
         input[type="email"]:focus, input[type="password"]:focus {
             border-color: #f0c14b;
@@ -177,7 +181,6 @@
 </head>
 @php
     $locale = app()->getLocale();
-    $dir = $locale === 'ar' ? 'rtl' : 'ltr';
     $labels = require base_path('lang/' . $locale . '.php');
 @endphp
 

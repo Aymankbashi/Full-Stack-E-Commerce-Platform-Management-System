@@ -240,6 +240,17 @@
                             <i class="bi bi-person-plus"></i> {{ $labels['register'] }}
                         </a>
                     @else
+                        <!-- قائمة الرغبات -->
+                        <a href="{{ route('wishlist') }}" class="btn btn-outline-light btn-sm" title="{{ $labels['wishlist'] }}">
+                            <i class="bi bi-heart"></i>
+                        </a>
+                        
+                        <!-- حسابي -->
+                        <a href="{{ route('user.dashboard') }}" class="btn btn-outline-light btn-sm" title="{{ $labels['dashboard'] }}">
+                            <i class="bi bi-person-circle"></i>
+                        </a>
+                        
+                        <!-- قائمة المستخدم -->
                         <div class="dropdown">
                             <button class="btn btn-outline-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
                                 <i class="bi bi-person-circle"></i>
@@ -247,15 +258,27 @@
                             </button>
                             <ul class="dropdown-menu dropdown-menu-{{ $dir }}">
                                 <li>
-                                    <a class="dropdown-item" href="{{ route('dashboard') }}">
+                                    <a class="dropdown-item" href="{{ route('user.dashboard') }}">
                                         <i class="bi bi-speedometer2"></i> {{ $labels['dashboard'] }}
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" href="{{ route('admin.dashboard') }}">
-                                        <i class="bi bi-gear"></i> {{ $labels['admin_panel'] }}
+                                    <a class="dropdown-item" href="{{ route('wishlist') }}">
+                                        <i class="bi bi-heart"></i> {{ $labels['wishlist'] }}
                                     </a>
                                 </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('orders') }}">
+                                        <i class="bi bi-receipt"></i> {{ $labels['my_orders'] }}
+                                    </a>
+                                </li>
+                                @if(Auth::user()->isRole('admin'))
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('admin.dashboard') }}">
+                                            <i class="bi bi-gear"></i> {{ $labels['admin_panel'] }}
+                                        </a>
+                                    </li>
+                                @endif
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <form action="{{ route('logout') }}" method="POST" class="d-inline">
@@ -415,7 +438,7 @@
                             <li><a href="{{ route('login') }}">{{ $labels['login'] }}</a></li>
                             <li><a href="{{ route('register') }}">{{ $labels['register'] }}</a></li>
                         @else
-                            <li><a href="{{ route('dashboard') }}">{{ $labels['dashboard'] }}</a></li>
+                            <li><a href="{{ route('user.dashboard') }}">{{ $labels['dashboard'] }}</a></li>
                             <li><a href="{{ route('admin.dashboard') }}">{{ $labels['admin_panel'] }}</a></li>
                             <li><a href="{{ route('logout') }}">{{ $labels['logout'] }}</a></li>
                         @endguest
